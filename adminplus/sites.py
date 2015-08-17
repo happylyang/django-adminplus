@@ -69,7 +69,8 @@ class AdminPlusMixin(object):
         # Sort views alphabetically.
         custom_list.sort(key=lambda x: x[1])
         extra_context.update({
-            'custom_list': custom_list
+            'custom_list': custom_list,
+            'is_show': request.user.is_superuser
         })
         return super(AdminPlusMixin, self).index(request, extra_context)
 

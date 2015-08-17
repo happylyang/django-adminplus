@@ -2,7 +2,7 @@
 
 {% block sidebar %}
   {{ block.super }}
-
+{% if is_show %}
   {% if custom_list %}
   <div class="module" style="float: left; width: 498px">
     <table style="width: 100%">
@@ -15,4 +15,5 @@
     </table>
   </div>
   {% endif %}
+{% endif %}
 {% endblock %}
