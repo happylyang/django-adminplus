@@ -3,15 +3,24 @@
 {% block sidebar %}
   {{ block.super }}
   {% if custom_list %}
-  <div class="module" style="float: left; width: 498px">
-    <table style="width: 100%">
-      <caption>Custom Views</caption>
-      <tbody>
-        {% for path, name in custom_list %}
-          <tr><td><a href="{{ path }}">{{ name }}</a></td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
+<h2 id="other" class="app-name"><a href="#">统计及其他配置</a></h2>
+
+<table summary="Models available in the Account application." class="table table-striped table-bordered">
+
+  <tbody>
+  {% for path, name in custom_list %}
+  <tr>
+    <th scope="row">
+
+      <a href="{{ path }}">{{ name }}</a>
+
+
+    </th>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
   {% endif %}
 {% endblock %}
