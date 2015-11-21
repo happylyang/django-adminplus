@@ -17,7 +17,7 @@ class AdminPlusMixin(object):
         return super(AdminPlusMixin, self).__init__(*args, **kwargs)
 
     def register_view(self, path, name=None, urlname=None, visible=True,
-                      view=None):
+                      view=None, hidden=False):
         """Add a custom admin view. Can be used as a function or a decorator.
 
         * `path` is the path in the admin where the view will live, e.g.
@@ -33,13 +33,13 @@ class AdminPlusMixin(object):
         if view is not None:
             if is_class_based_view(view):
                 view = view.as_view()
-            self.custom_views.append((path, view, name, urlname, visible))
+            self.custom_views.append((path, view, name, urlname, visible, hidden))
             return
 
         def decorator(fn):
             if is_class_based_view(fn):
                 fn = fn.as_view()
-            self.custom_views.append((path, fn, name, urlname, visible))
+            self.custom_views.append((path, fn, name, urlname, visible, hidden))
             return fn
         return decorator
 
@@ -47,7 +47,7 @@ class AdminPlusMixin(object):
         """Add our custom views to the admin urlconf."""
         urls = super(AdminPlusMixin, self).get_urls()
         from django.conf.urls import patterns, url
-        for path, view, name, urlname, visible in self.custom_views:
+        for path, view, name, urlname, visible, hidden in self.custom_views:
             urls = patterns(
                 '',
                 url(r'^%s$' % path, self.admin_view(view), name=urlname),
@@ -59,18 +59,19 @@ class AdminPlusMixin(object):
         if not extra_context:
             extra_context = {}
         custom_list = []
-        for path, view, name, urlname, visible in self.custom_views:
-            if visible is True:
-                if name:
-                    custom_list.append((path, name))
-                else:
-                    custom_list.append((path, capfirst(view.__name__)))
+        for path, view, name, urlname, visible, hidden in self.custom_views:
+            if not hidden:
+                if visible or request.user.is_superuser:
+                    if name:
+                        custom_list.append((path, name))
+                    else:
+                        custom_list.append((path, capfirst(view.__name__)))
 
         # Sort views alphabetically.
         custom_list.sort(key=lambda x: x[1])
+        print len(custom_list)
         extra_context.update({
-            'custom_list': custom_list,
-            'is_show': request.user.is_superuser
+            'custom_list': custom_list
         })
         return super(AdminPlusMixin, self).index(request, extra_context)
 
