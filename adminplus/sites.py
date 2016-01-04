@@ -10,7 +10,7 @@ def is_class_based_view(view):
 class AdminPlusMixin(object):
     """Mixin for AdminSite to allow registering custom admin views."""
 
-    index_template = 'adminplus/index.html'  # That was easy.
+    # index_template = 'adminplus/index.html'  # That was easy.
 
     def __init__(self, *args, **kwargs):
         self.custom_views = []
